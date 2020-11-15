@@ -1,5 +1,6 @@
 import datetime
 from django.db.models import Sum
+from django.db.models import FloatField
 from django.db.models import F
 from . import models
 
@@ -66,7 +67,7 @@ class Cart:
         return self.cart.item_set.all().aggregate(Sum('quantity')).get('quantity__sum', 0)
 
     def summary(self):
-        return self.cart.item_set.all().aggregate(total=Sum(F('quantity')*F('unit_price'))).get('total', 0)
+        return self.cart.item_set.all().aggregate(total=Sum(F('quantity')*F('unit_price'), output_field=FloatField())).get('total', 0)
 
     def clear(self):
         self.cart.item_set.all().delete()
