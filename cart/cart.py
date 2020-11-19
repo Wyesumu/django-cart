@@ -36,7 +36,7 @@ class Cart:
         return cart
 
     def add(self, product, unit_price, quantity=1, shop_id=0):
-        item = models.Item.objects.filter(cart=self.cart, product=product).first()
+        item = models.Item.objects.filter(cart=self.cart, product=product, shop_id=shop_id).first()
         if item:
             item.unit_price = unit_price
             item.quantity += int(quantity)
@@ -69,6 +69,9 @@ class Cart:
 
     def summary(self):
         return self.cart.item_set.all().aggregate(total=Sum(F('quantity')*F('unit_price'), output_field=FloatField())).get('total', 0)
+
+    def shops_summary(self, shop_id):
+        return self.cart.item_set.filter(shop_id=shop_id).all().aggregate(total=Sum(F('quantity')*F('unit_price'), output_field=FloatField())).get('total', 0)
 
     def clear(self):
         self.cart.item_set.all().delete()
