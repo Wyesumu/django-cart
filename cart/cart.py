@@ -52,8 +52,8 @@ class Cart:
         else:
             raise ItemDoesNotExist
 
-    def update(self, product, quantity, unit_price=None):
-        item = models.Item.objects.filter(cart=self.cart, product=product).first()
+    def update(self, product, quantity, unit_price=None, shop_id=0):
+        item = models.Item.objects.filter(cart=self.cart, product=product, shop_id=shop_id).first()
         if item:
             if quantity == 0:
                 item.delete()
